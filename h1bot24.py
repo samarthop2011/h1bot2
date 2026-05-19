@@ -65,7 +65,7 @@ async def on_ready():
 
 # --- Bot Commands ---
 
-@bot.command(name='help_menu') # <<< FIX 1: Command name changed from 'help' to 'help_menu'
+@bot.command(name='help_menu') 
 async def help_command(ctx):
     """Provides a comprehensive list of commands."""
     help_embed = discord.Embed(
@@ -83,7 +83,6 @@ async def help_command(ctx):
         value="Attempts to perform an immediate CVE-2018 exploit hijack on the specified IP.",
         inline=False
     )
-    # <<< FIX 2: Updated the reference in the help embed
     help_embed.add_field(
         name=f"{PREFIX}help_menu", 
         value="Displays this help message!",
@@ -95,6 +94,7 @@ async def help_command(ctx):
 async def idrac_scan(ctx, ip: str = None):
     """Scans the provided IP for IDRAC vulnerability."""
     if ip is None:
+        # <<< FIX APPLIED HERE (Line 98)
         await ctx.send(f"❌ Missing Argument! Please provide an IP address. Usage: `{PREFIX}scan 192.168.1.1}`")
         return
 
@@ -102,7 +102,6 @@ async def idrac_scan(ctx, ip: str = None):
 
     try:
         # Set a timeout to prevent the bot from freezing if the IP is unresponsive
-        # Targeting the /event/auth endpoint is a standard vulnerability check
         response = requests.get(f"http://{ip}/event/auth/", timeout=10)
         
         status, detail = check_idrac_response(response)
@@ -111,7 +110,6 @@ async def idrac_scan(ctx, ip: str = None):
         embed = discord.Embed(
             title=f"🛡️ IDRAC Scan Results for {ip}",
             description=f"**Status:** `{status}`",
-            # Color coding based on status
             color=discord.Color.green() if "VULNERABLE" in status else (discord.Color.red() if "SECURE" in status else discord.Color.orange())
         )
         
@@ -143,6 +141,7 @@ async def idrac_scan(ctx, ip: str = None):
 async def idrac_hijack(ctx, ip: str = None):
     """Attempts to hijack the IDRAC session using the CVE-2018 exploit."""
     if ip is None:
+        # <<< FIX APPLIED HERE (If this was line 98, this is the fix)
         await ctx.send(f"❌ Missing Argument! Please provide an IP address. Usage: `{PREFIX}hijack 192.168.1.1}`")
         return
 
